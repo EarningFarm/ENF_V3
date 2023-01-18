@@ -18,15 +18,17 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
 
     ERC20Upgradeable public asset;
 
-    string public constant version = "3.0";
+    string public constant version = "4.0";
 
     address public depositApprover;
 
     address public controller;
 
-    uint256 public maxDeposit;
+    uint256 private assetDecimal;
 
     uint256 public maxWithdraw;
+
+    uint256 public maxDeposit;
 
     bool public paused;
 
@@ -57,12 +59,14 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
     function initialize(
         ERC20Upgradeable _asset,
         string memory _name,
-        string memory _symbol
+        string memory _symbol,
+        uint256 _assetDecimal
     ) public initializer {
         __ERC20_init(_name, _symbol);
         __Ownable_init();
         __ReentrancyGuard_init();
         asset = _asset;
+        assetDecimal = _assetDecimal;
         maxDeposit = type(uint256).max;
         maxWithdraw = type(uint256).max;
     }
@@ -102,29 +106,48 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
         require(assets != 0, "ZERO_ASSETS");
         require(assets <= maxWithdraw, "EXCEED_ONE_TIME_MAX_WITHDRAW");
 
-        // Total Assets amount until now
-        uint256 totalDeposit = convertToAssets(balanceOf(msg.sender));
-
-        require(assets <= totalDeposit, "EXCEED_TOTAL_DEPOSIT");
-
         // Calculate share amount to be burnt
         shares = (totalSupply() * assets) / IController(controller).totalAssets(false);
 
+        require(balanceOf(msg.sender) >= shares, "EXCEED_TOTAL_DEPOSIT");
+
+        // Withdraw asset
+        _withdraw(assets, shares, receiver);
+    }
+
+    function redeem(uint256 shares, address receiver) public virtual nonReentrant unPaused returns (uint256 assets) {
+        require(shares > 0, "ZERO_SHARES");
+        require(shares <= balanceOf(msg.sender), "EXCEED_TOTAL_BALANCE");
+
+        assets = (shares * assetsPerShare()) / 1e24;
+
+        require(assets <= maxWithdraw, "EXCEED_ONE_TIME_MAX_WITHDRAW");
+
+        // Withdraw asset
+        _withdraw(assets, shares, receiver);
+    }
+
+    function _withdraw(
+        uint256 assets,
+        uint256 shares,
+        address receiver
+    ) internal {
         // Calls Withdraw function on controller
         (uint256 withdrawn, uint256 fee) = IController(controller).withdraw(assets, receiver);
-
         require(withdrawn > 0, "INVALID_WITHDRAWN_SHARES");
 
-        // Shares could exceed balance of caller
-        if (balanceOf(msg.sender) < shares) shares = balanceOf(msg.sender);
-
+        // Burn shares amount
         _burn(msg.sender, shares);
 
         emit Withdraw(address(asset), msg.sender, receiver, assets, shares, fee);
     }
 
+    function assetsPerShare() internal view returns (uint256) {
+        return (IController(controller).totalAssets(false) * assetDecimal * 1e18) / totalSupply();
+    }
+
     function totalAssets() public view virtual returns (uint256) {
-        return IController(controller).totalAssets(true);
+        return IController(controller).totalAssets(false);
     }
 
     function convertToShares(uint256 assets) public view virtual returns (uint256) {
