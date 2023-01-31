@@ -65,6 +65,13 @@ exports.curveTri = "0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7";
 exports.triLP = "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490";
 exports.triPid = 9;
 
+/**
+ * Curve Mim Info
+ */
+exports.curveMim = "0xa79828df1850e8a3a3064576f380d90aecdd3359";
+exports.mimLP = "0x5a6A4D54456819380173272A5E8E9B9904BdF41B";
+exports.mimPid = 40;
+
 // CRV-WETH-USDC
 exports.crvUsdcPath = [
   "0xD533a949740bb3306d119CC777fa900bA034cd52",
