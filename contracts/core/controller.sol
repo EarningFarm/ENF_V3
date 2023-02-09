@@ -133,7 +133,7 @@ contract Controller is Initializable, IController, OwnableUpgradeable, Reentranc
 
     /**
         _deposit is internal function for deposit action, if default option is set, deposit all requested amount to default sub strategy.
-        Unless loop through sub strategies regiestered and distribute assets according to the allocpoint of each SS
+        Unless loop through sub strategies registered and distribute assets according to the allocpoint of each SS
      */
     function _deposit(uint256 _amount) internal returns (uint256 depositAmt) {
         if (isDefault) {
