@@ -62,7 +62,6 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
     }
 
     modifier onlyAllowed() {
-        console.log("Allowed: ", tx.origin == msg.sender || IWhitelist(whiteList).listed(msg.sender));
         require(tx.origin == msg.sender || IWhitelist(whiteList).listed(msg.sender), "NON_LISTED_CA");
         _;
     }

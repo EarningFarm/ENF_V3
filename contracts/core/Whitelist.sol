@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "hardhat/console.sol";
 
 contract Whitelist is Initializable, OwnableUpgradeable {
     mapping(address => bool) public listedCA;
@@ -22,7 +21,6 @@ contract Whitelist is Initializable, OwnableUpgradeable {
     }
 
     function listed(address _ca) public view returns (bool) {
-        console.log("Listed: ", listedCA[_ca]);
         return listedCA[_ca];
     }
 }
