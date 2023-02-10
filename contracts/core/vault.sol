@@ -10,6 +10,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
 import "../interfaces/IController.sol";
+import "../interfaces/IWhitelist.sol";
 import "../utils/TransferHelper.sol";
 
 contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
@@ -29,6 +30,8 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
     uint256 public maxWithdraw;
 
     uint256 public maxDeposit;
+
+    address public whiteList;
 
     bool public paused;
 
@@ -51,8 +54,16 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
 
     event SetDepositApprover(address depositApprover);
 
+    event SetWhitelist(address whiteList);
+
     modifier unPaused() {
         require(!paused, "PAUSED");
+        _;
+    }
+
+    modifier onlyAllowed() {
+        console.log("Allowed: ", tx.origin == msg.sender || IWhitelist(whiteList).listed(msg.sender));
+        require(tx.origin == msg.sender || IWhitelist(whiteList).listed(msg.sender), "NON_LISTED_CA");
         _;
     }
 
@@ -60,7 +71,8 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
         ERC20Upgradeable _asset,
         string memory _name,
         string memory _symbol,
-        uint256 _assetDecimal
+        uint256 _assetDecimal,
+        address _whiteList
     ) public initializer {
         __ERC20_init(_name, _symbol);
         __Ownable_init();
@@ -69,9 +81,18 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
         assetDecimal = _assetDecimal;
         maxDeposit = type(uint256).max;
         maxWithdraw = type(uint256).max;
+
+        whiteList = _whiteList;
     }
 
-    function deposit(uint256 assets, address receiver) public virtual nonReentrant unPaused returns (uint256 shares) {
+    function deposit(uint256 assets, address receiver)
+        public
+        virtual
+        nonReentrant
+        unPaused
+        onlyAllowed
+        returns (uint256 shares)
+    {
         require(assets != 0, "ZERO_ASSETS");
         require(assets <= maxDeposit, "EXCEED_ONE_TIME_MAX_DEPOSIT");
 
@@ -102,7 +123,14 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
         else return IERC20Upgradeable(asset).balanceOf(account);
     }
 
-    function withdraw(uint256 assets, address receiver) public virtual nonReentrant unPaused returns (uint256 shares) {
+    function withdraw(uint256 assets, address receiver)
+        public
+        virtual
+        nonReentrant
+        unPaused
+        onlyAllowed
+        returns (uint256 shares)
+    {
         require(assets != 0, "ZERO_ASSETS");
         require(assets <= maxWithdraw, "EXCEED_ONE_TIME_MAX_WITHDRAW");
 
@@ -115,7 +143,14 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
         _withdraw(assets, shares, receiver);
     }
 
-    function redeem(uint256 shares, address receiver) public virtual nonReentrant unPaused returns (uint256 assets) {
+    function redeem(uint256 shares, address receiver)
+        public
+        virtual
+        nonReentrant
+        unPaused
+        onlyAllowed
+        returns (uint256 assets)
+    {
         require(shares > 0, "ZERO_SHARES");
         require(shares <= balanceOf(msg.sender), "EXCEED_TOTAL_BALANCE");
 

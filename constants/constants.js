@@ -11,7 +11,7 @@ exports.stkAAVE = "0x4da27a545c0c5B758a6BA100e3a049001de870f5";
 exports.note = "0xCFEAead4947f0705A14ec42aC3D44129E1Ef3eD5";
 exports.cvx = "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B";
 exports.dai = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
-
+exports.ldo = "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32";
 exports.wbtc = "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599";
 
 /**
@@ -82,6 +82,8 @@ exports.crvEthPath = ["0xD533a949740bb3306d119CC777fa900bA034cd52", "0xc02aaa39b
 exports.ethUsdcPath = ["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"];
 
 exports.alcxEthPath = ["0xdbdb4d16eda451d0503b854cf79d55697f90c8df", "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"];
+
+exports.ldoEthPath = ["0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32", "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"];
 
 /**
  * Notional Info
@@ -155,6 +157,12 @@ exports.univ3ETHUSDC = [
   "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
   "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // CRV
   500,
+];
+
+exports.univ3LDOETH = [
+  "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32",
+  "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+  3000,
 ];
 
 /**
