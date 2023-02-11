@@ -228,6 +228,13 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
         emit SetDepositApprover(depositApprover);
     }
 
+    function setWhitelist(address _whitelist) public onlyOwner {
+        require(_whitelist != address(0), "INVALID_ZERO_ADDRESS");
+        whiteList = _whitelist;
+
+        emit SetWhitelist(whiteList);
+    }
+
     ////////////////////////////////////////////////////////////////////
     //                      PAUSE/RESUME                              //
     ////////////////////////////////////////////////////////////////////

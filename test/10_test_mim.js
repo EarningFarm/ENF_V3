@@ -272,19 +272,19 @@ describe("ENF Vault test", async () => {
     await expect(depositApprover2.connect(alice).deposit(fromUSDC(100))).to.revertedWith("NON_LISTED_CA");
   });
 
-  // ///////////////////////////////////////////////////
-  // //                WITHDRAW                       //
-  // ///////////////////////////////////////////////////
-  // it("Withdraw 90 USDC", async () => {
-  //   await vault.connect(alice).withdraw(fromUSDC(90), alice.address);
-  //   // Read Total Assets
-  //   const total = await vault.totalAssets();
-  //   console.log(`\tTotal USDC Balance: ${toUSDC(total)}`);
+  ///////////////////////////////////////////////////
+  //                WITHDRAW                       //
+  ///////////////////////////////////////////////////
+  it("Withdraw 90 USDC", async () => {
+    await vault.connect(alice).withdraw(fromUSDC(90), alice.address);
+    // Read Total Assets
+    const total = await vault.totalAssets();
+    console.log(`\tTotal USDC Balance: ${toUSDC(total)}`);
 
-  //   // Read ENF token Mint
-  //   const enf = await vault.balanceOf(alice.address);
-  //   console.log(`\tAlice ENF Balance: ${toEth(enf)}`);
-  // });
+    // Read ENF token Mint
+    const enf = await vault.balanceOf(alice.address);
+    console.log(`\tAlice ENF Balance: ${toEth(enf)}`);
+  });
 
   // it("Withdraw 10 USDC will be reverted", async () => {
   //   await expect(vault.connect(alice).withdraw(fromUSDC(10), alice.address)).to.revertedWith("EXCEED_TOTAL_DEPOSIT");
