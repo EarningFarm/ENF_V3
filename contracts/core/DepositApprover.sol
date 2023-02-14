@@ -25,7 +25,7 @@ contract DepositApprover is Ownable {
         _;
     }
 
-    function deposit(uint256 amount, uint256 receiver) public onlyAllowed {
+    function deposit(uint256 amount, address receiver) public onlyAllowed {
         require(getBalance(msg.sender) >= amount, "INSUFFICIENT_AMOUNT");
         require(IERC20(asset).allowance(msg.sender, address(this)) >= amount, "INSUFFICIENT_ALLOWANCE");
 
