@@ -191,15 +191,7 @@ contract Mim is OwnableUpgradeable, ISubStrategy {
         uint256 newAmt = _totalAssets();
         return newAmt - prevAmt;
     }
-
-    function getPID(address _lpToken) public view returns (uint256) {
-        for (uint256 i = 0; i < IConvexBooster(convex).poolLength(); i++) {
-            (address lp_token, , , , , bool shutdown) = IConvexBooster(convex).poolInfo(i);
-            if (lp_token == _lpToken) return i;
-        }
-        return 0;
-    }
-
+    
     /**
         Withdraw function of USDC
      */

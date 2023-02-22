@@ -181,7 +181,7 @@ contract EFVault is Initializable, ERC20Upgradeable, OwnableUpgradeable, Reentra
     }
 
     function totalAssets() public view virtual returns (uint256) {
-        return IController(controller).totalAssets(false);
+        return IController(controller).totalAssets(true);
     }
 
     function convertToShares(uint256 assets) public view virtual returns (uint256) {
