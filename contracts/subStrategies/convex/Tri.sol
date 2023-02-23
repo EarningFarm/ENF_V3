@@ -251,6 +251,7 @@ contract Tri is OwnableUpgradeable, ISubStrategy {
         // Transfer Reward tokens to controller
         for (uint256 i = 0; i < rewardTokens.length; i++) {
             uint256 balance = IERC20(rewardTokens[i]).balanceOf(address(this));
+            if (balance == 0) return;
             TransferHelper.safeTransfer(rewardTokens[i], controller, balance);
         }
 
